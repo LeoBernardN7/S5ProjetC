@@ -10,7 +10,7 @@
 typedef struct cellule_noeud {
     coord_t noeud;
     coord_t precedent;
-    double cout;
+    float cout;
     struct cellule_noeud *suivant;
 } cellule_noeud_t;
 
@@ -94,7 +94,7 @@ bool contient_arrete_liste(const liste_noeud_t *liste, coord_t source, coord_t d
 }
 
 /* cout_noeud_liste : récupère le coût associé au noeud donné dans la liste donnée */
-double cout_noeud_liste(const liste_noeud_t *liste, coord_t noeud) {
+float cout_noeud_liste(const liste_noeud_t *liste, coord_t noeud) {
 
     cellule_noeud_t *cellule = chercher_cellule(liste, noeud);
     if (cellule == NULL) {
@@ -143,7 +143,7 @@ coord_t min_noeud_liste(const liste_noeud_t *liste) {
 }
 
 /* inserer_noeud_liste : modifie les valeurs associées au noeud donné dans la liste donnée, et ajoute le noeud s'il n'existe pas déjà */
-void inserer_noeud_liste(liste_noeud_t *liste, coord_t noeud, coord_t precedent, double cout) {
+void inserer_noeud_liste(liste_noeud_t *liste, coord_t noeud, coord_t precedent, float cout) {
 
     cellule_noeud_t *cellule = chercher_cellule(liste, noeud);
 
