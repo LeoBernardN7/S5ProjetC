@@ -14,7 +14,7 @@
 struct grille_t {
     int largeur;
     int profondeur;
-    float** grille;
+    float** valeurs;
 };
 
 // TODO : typedef pour éviter d'écrire "struct grille_t" partout
