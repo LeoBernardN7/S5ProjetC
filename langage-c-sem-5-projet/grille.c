@@ -198,9 +198,35 @@ float get_hauteur(grille_t grille, coord_t position) {
  * @return taille du tableau voisins alloué par la fonction
  */
 size_t get_voisins(grille_t grille, coord_t position, float seuil, coord_t** voisins) {
-    // {-1, 0}, {1, 0}, {0, -1}, {0, 1}
-    
-    return 0;
+    int diffX[] = {-1, 1, 0,  0};
+    int diffY[] = {0,  0, -1, 1};
+
+    size_t compte = 0;
+    coord_t temporaire[4];
+    float hauteur = get_hauteur(grille, position);
+
+    for (int i=0; i<4; i++) {
+        coord_t coord = creer_coord(position.x + diffX[i], position.y + diffY[i]);
+        if (dans_les_bornes(grille, coord)) {
+            float hauteur_case = get_hauteur(grille, coord);
+            
+            if (fabsf(hauteur - hauteur_case) <= seuil) {
+                temporaire[compte] = coord;
+                compte++;
+            }
+        }
+    }
+
+    if (compte > 0) {
+        *voisins = malloc(sizeof(coord_t) * compte);
+        for (int i=0; i<compte; i++) {
+            (*voisins)[i] = temporaire[i];
+        }
+    } else {
+        *voisins = NULL;
+    }
+
+    return compte;
 }
 
 
