@@ -29,7 +29,7 @@
 #ifndef VIEWPORT_H
 #define VIEWPORT_H
 
-#include "SDL2/SDL2/SDL_rect.h"
+#include <SDL2/SDL_rect.h>
 #include "point.h"
 
 /**
