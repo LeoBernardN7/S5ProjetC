@@ -20,7 +20,7 @@
 static float cout(grille_t grille, coord_t courant, coord_t suivant) {
 	float distance; 
 	/* Préconditions, les deux noeuds sont dans la grille : */
-	if (dans_les_bornes(grille,courant) = False) or (dans_les_bornes(grille,suivant) = False) {
+	if ((!dans_les_bornes(grille,courant)) || (!dans_les_bornes(grille,suivant))) {
 		return NULL;        //ou alors on met un message d'erreur
 	}
 	distance = distance_euclidienne(courant,suivant);
@@ -46,24 +46,27 @@ static float cout(grille_t grille, coord_t courant, coord_t suivant) {
  */
 // TODO: construire_chemin_vers
 
-void construire_chemin_vers(liste_noeud_t** chemin, liste_noeud_t** visites, coord_t source, coord_t noeud) {
-
+float construire_chemin_vers(liste_noeud_t* chemin, liste_noeud_t* visites, coord_t source, coord_t noeud) {
+	float cout_chemin = 0;
 	coord_t precedent = precedent_noeud_liste(visites, noeud);
 
-	if (noeud == source) {      //cas de base, C-2
+	if (memes_coord(noeud,source)) {      //cas de base, C-2
 		inserer_noeud_liste(chemin, noeud, noeud, 0.0);		//c'est le noeud de depart par convention il est son propre précédent
+		return cout_chemin;
 	}
 	else {
-	construire_chemin_vers(chemin, visites, source, precedent);		//appel récursif C-3
-	inserer_noeud_liste(chemin, noeud, precedent, cout_noeud_liste(visites, noeud));
+		construire_chemin_vers(chemin, visites, source, precedent);		//appel récursif C-3
+		inserer_noeud_liste(chemin, noeud, precedent, cout_noeud_liste(visites, noeud));
+		cout_chemin = cout_chemin + cout_noeud_liste(visites, noeud);
 	}
+	return cout_chemin;
 }
 
 
 float dijkstra(grille_t grille, coord_t source, coord_t destination, float seuil, liste_noeud_t** chemin) {
 	// TODO
-	liste_noeud_t AVisiter = creer_liste(void);
-	liste_noeud_t visites = creer_liste(void);
+	liste_noeud_t* AVisiter = creer_liste();
+	liste_noeud_t* visites = creer_liste();
 	coord_t** voisins;	// le tableau des voisins
 	int n;				// taille du tableau des voisins
 	coord_t voisin;
@@ -73,8 +76,8 @@ float dijkstra(grille_t grille, coord_t source, coord_t destination, float seuil
 	// partie "D"
 	inserer_noeud_liste(AVisiter, source, source, 0.0);																		// D-1
 	while (est_vide_liste(AVisiter) == false) {																				// D-2
-		cellule_noeud_t *courant = min_noeud_liste(AVisiter);																// D-2.1
-		inserer_noeud_liste(visites, courant, precedent_noeud_liste(AVisiter, noeud), cout_noeud_liste(AVisiter, noeud));	// D-2.2
+		coord_t courant = min_noeud_liste(AVisiter);																		// D-2.1
+		inserer_noeud_liste(visites, courant, precedent_noeud_liste(AVisiter, courant), cout_noeud_liste(AVisiter, courant));	// D-2.2
 		supprimer_noeud_liste(AVisiter, courant);																			// D-2.3
 		n = get_voisins(grille, courant, seuil, voisins);
 		for (int compteur = 0; compteur < n; compteur++) {
@@ -97,7 +100,8 @@ float dijkstra(grille_t grille, coord_t source, coord_t destination, float seuil
 		}
 	}
 	// partie "C"
-	construire_chemin_vers(chemin, visites, source, destination);
+	float cout_minimal = construire_chemin_vers(chemin, visites, source, destination);
+	return cout_minimal;
 }
 
 
