@@ -77,7 +77,7 @@ bool contient_arrete_liste(const liste_noeud_t *liste, coord_t source, coord_t d
  * @param noeud noeud dont on veut la distance
  * @return coût associé à noeud dans liste ou INFINITY si noeud n'est pas dans liste
  */
-double cout_noeud_liste(const liste_noeud_t *liste, coord_t noeud);
+float cout_noeud_liste(const liste_noeud_t *liste, coord_t noeud);
 
 /**
  * precedent_noeud_liste : récupère le noeud précédent associé au noeud donné dans la liste donnée.
@@ -121,7 +121,7 @@ coord_t min_noeud_liste(const liste_noeud_t *liste);
  * @param precedent nouveau noeud précédent pour noeud
  * @param cout nouveau coût pour noeud
  */
-void inserer_noeud_liste(liste_noeud_t *liste, coord_t noeud, coord_t precedent, double cout);
+void inserer_noeud_liste(liste_noeud_t *liste, coord_t noeud, coord_t precedent, float cout);
 
 /**
  * supprimer_noeud_liste : supprime le noeud donné de la liste. Si le noeud n'est pas dans la liste,

@@ -119,15 +119,11 @@ coord_t precedent_noeud_liste(const liste_noeud_t *liste, coord_t noeud) {
 }
 
 /* min_noeud_liste : trouve le (un) noeud de la liste dont le coût heuristique associé est le plus petit */
+// Précondition: !est_vide_liste(liste)
 coord_t min_noeud_liste(const liste_noeud_t *liste) {
 
     cellule_noeud_t *courant = liste->tete;
     cellule_noeud_t *min_cellule;
-
-    /* Pré-condition : liste non vide */
-    if est_vide_liste(liste) {
-        return NULL;
-    }
 
     min_cellule = courant;
     courant = courant->suivant;
