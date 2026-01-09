@@ -18,6 +18,15 @@
  * @return coût pour passer de courant à suivant
  */
 static float cout(grille_t grille, coord_t courant, coord_t suivant) {
+	float distance; 
+	/* Préconditions, les deux noeuds sont dans la grille : */
+	if (dans_les_bornes(grille,courant) = False) or (dans_les_bornes(grille,suivant) = False) {
+		return NULL;        //ou alors on met un message d'erreur
+	}
+	distance = distance_euclidienne(courant,suivant);
+	if (distance >= 0) {
+		return distance;
+	}
 }
 
 /**
@@ -37,13 +46,58 @@ static float cout(grille_t grille, coord_t courant, coord_t suivant) {
  */
 // TODO: construire_chemin_vers
 
-float dijkstra(
-        grille_t grille, 
-        coord_t source, coord_t destination, 
-        float seuil,
-        liste_noeud_t** chemin
-    ) {
-    // TODO
+void construire_chemin_vers(liste_noeud_t** chemin, liste_noeud_t** visites, coord_t source, coord_t noeud) {
+
+	coord_t precedent = precedent_noeud_liste(visites, noeud);
+
+	if (noeud == source) {      //cas de base, C-2
+		inserer_noeud_liste(chemin, noeud, noeud, 0.0);		//c'est le noeud de depart par convention il est son propre précédent
+	}
+	else {
+	construire_chemin_vers(chemin, visites, source, precedent);		//appel récursif C-3
+	inserer_noeud_liste(chemin, noeud, precedent, cout_noeud_liste(visites, noeud));
+	}
+}
+
+
+float dijkstra(grille_t grille, coord_t source, coord_t destination, float seuil, liste_noeud_t** chemin) {
+	// TODO
+	liste_noeud_t AVisiter = creer_liste(void);
+	liste_noeud_t visites = creer_liste(void);
+	coord_t** voisins;	// le tableau des voisins
+	int n;				// taille du tableau des voisins
+	coord_t voisin;
+	float delta_prime;		//NB : je me base sur les notations du sujet mais je ne connais pas le raccourci clavier MacOS de delta
+	float delta;
+
+	// partie "D"
+	inserer_noeud_liste(AVisiter, source, source, 0.0);																		// D-1
+	while (est_vide_liste(AVisiter) == false) {																				// D-2
+		cellule_noeud_t *courant = min_noeud_liste(AVisiter);																// D-2.1
+		inserer_noeud_liste(visites, courant, precedent_noeud_liste(AVisiter, noeud), cout_noeud_liste(AVisiter, noeud));	// D-2.2
+		supprimer_noeud_liste(AVisiter, courant);																			// D-2.3
+		n = get_voisins(grille, courant, seuil, voisins);
+		for (int compteur = 0; compteur < n; compteur++) {
+			voisin = voisins[compteur];
+			if (contient_noeud_liste(visites,voisin) == false) { 															// voisin non visité D-2.4
+				delta_prime = cout_noeud_liste(visites, courant) + distance_euclidienne(courant, voisin);					// D-2.4.1
+				if (contient_noeud_liste(AVisiter,voisin)) {																// si voisin dans AVisiter, D-2.4.2
+					delta = cout_noeud_liste(AVisiter, voisin);
+				}
+				else {
+					delta = INFINITY;
+				}
+				if (delta_prime < delta) {																					// D-2.4.3
+					inserer_noeud_liste(AVisiter, voisin, courant, delta_prime);
+				}
+			}
+			else {
+				null;		// si voisin deja visité on ne fait rien
+			}
+		}
+	}
+	// partie "C"
+	construire_chemin_vers(chemin, visites, source, destination);
 }
 
 
